@@ -182,6 +182,8 @@ The Web Site flags control the behavior of Marathon's web site, including the us
     May also be specified with the `MESOSPHERE_KEYSTORE_PASS` environment variable.
 * `--http_max_concurrent_requests` (Optional. Default: 20): the maximum number of
     concurrent requests, that is allowed before rejecting.
+* `--http_max_concurrent_requests_wait_time` (Optional. Default: 5): the wait time in seconds
+    to wait and try to for one request, if the number of concurrent requests is greater than the maximum.
 
 
 

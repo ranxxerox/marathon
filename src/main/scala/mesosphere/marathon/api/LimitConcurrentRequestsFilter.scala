@@ -1,19 +1,21 @@
 package mesosphere.marathon.api
 
-import java.util.concurrent.Semaphore
+import java.util.concurrent.{ TimeUnit, Semaphore }
 import javax.servlet._
 import javax.servlet.http.HttpServletResponse
+
+import scala.concurrent.duration.Duration
 
 /**
   * Limit the number of concurrent http requests.
   * @param concurrentRequests the maximum number of concurrent requests.
   */
-class LimitConcurrentRequestsFilter(concurrentRequests: Int) extends Filter {
+class LimitConcurrentRequestsFilter(concurrentRequests: Int, waitTime: Duration) extends Filter {
 
   private[this] val semaphore = new Semaphore(concurrentRequests)
 
   override def doFilter(request: ServletRequest, response: ServletResponse, chain: FilterChain): Unit = {
-    if (semaphore.tryAcquire()) {
+    if (semaphore.tryAcquire(waitTime.toSeconds, TimeUnit.SECONDS)) {
       try { chain.doFilter(request, response) }
       finally { semaphore.release() }
     }

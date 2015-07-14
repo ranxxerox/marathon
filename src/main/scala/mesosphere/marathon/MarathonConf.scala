@@ -59,6 +59,12 @@ trait MarathonConf extends ScallopConf with ZookeeperConf with IterativeOfferMat
     default = Some(20)
   )
 
+  lazy val maxConcurrentHttpWaitTime = opt[Int]("http_max_concurrent_requests_wait_time",
+    descr = "The time in seconds to wait and try if the number of concurrent requests is greater than the maximum.",
+    noshort = true,
+    default = Some(5)
+  )
+
   lazy val accessControlAllowOrigin = opt[String]("access_control_allow_origin",
     descr = "The origin(s) to allow in Marathon. Not set by default. " +
       "Example values are \"*\", or " +

@@ -2,6 +2,7 @@ package mesosphere.marathon.api
 
 import javax.inject.Named
 import javax.net.ssl.SSLContext
+import scala.concurrent.duration._
 
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.google.inject.servlet.ServletModule
@@ -81,6 +82,6 @@ class MarathonRestModule extends RestModule {
   @Provides
   @Singleton
   def provideRequestsLimiter(conf: MarathonConf): LimitConcurrentRequestsFilter = {
-    new LimitConcurrentRequestsFilter(conf.maxConcurrentHttpConnections())
+    new LimitConcurrentRequestsFilter(conf.maxConcurrentHttpConnections(), conf.maxConcurrentHttpWaitTime().seconds)
   }
 }

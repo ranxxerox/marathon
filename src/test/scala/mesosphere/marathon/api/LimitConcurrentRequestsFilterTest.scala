@@ -10,6 +10,7 @@ import org.scalatest.{ Matchers, GivenWhenThen }
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import scala.concurrent.duration._
 
 class LimitConcurrentRequestsFilterTest extends MarathonSpec with GivenWhenThen with Mockito with Matchers {
 
@@ -20,7 +21,7 @@ class LimitConcurrentRequestsFilterTest extends MarathonSpec with GivenWhenThen 
     val response = mock[HttpServletResponse]
     val chain = mock[FilterChain]
     chain.doFilter(request, response) answers { args => latch.countDown() }
-    val rf = new LimitConcurrentRequestsFilter(2)
+    val rf = new LimitConcurrentRequestsFilter(2, 100.millis)
 
     When("requests where made before the limit")
     Future(rf.doFilter(request, response, chain))
@@ -39,7 +40,7 @@ class LimitConcurrentRequestsFilterTest extends MarathonSpec with GivenWhenThen 
     val response = mock[HttpServletResponse]
     val chain = mock[FilterChain]
     chain.doFilter(request, response) answers { args => latch.countDown(); semaphore.acquire() /* blocks*/ }
-    val rf = new LimitConcurrentRequestsFilter(1)
+    val rf = new LimitConcurrentRequestsFilter(1, 100.millis)
 
     When("requests where made before the limit")
     Future(rf.doFilter(request, response, chain))
